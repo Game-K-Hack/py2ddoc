@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        stub: ["twoddoc", "2ddoc", "2d-doc"]
+        stub: ["twoddoc", "2ddoc"]
     steps:
       - uses: actions/checkout@v4
 
@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        stub: ["twoddoc", "2ddoc", "2d-doc"]
+        stub: ["twoddoc", "2ddoc"]
     environment:
       name: pypi-${{ matrix.stub }}
       url: https://pypi.org/p/${{ matrix.stub }}
