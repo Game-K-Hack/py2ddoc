@@ -145,8 +145,12 @@ class TrustStore:
         Returns:
             A :class:`TrustStore` pre-loaded with all ANTS CA certificates.
         """
-        pkg = importlib.resources.files(__package__)
-        tsl_bytes = (pkg / "tsl_signed.xml").read_bytes()
+        # importlib.resources.files() requires Python 3.9+; fall back to
+        # read_binary() on Python 3.8 (deprecated in 3.11 but still works).
+        try:
+            tsl_bytes = (importlib.resources.files(__package__) / "tsl_signed.xml").read_bytes()
+        except AttributeError:
+            tsl_bytes = importlib.resources.read_binary(__package__, "tsl_signed.xml")
         # Parse from the in-memory bytes to avoid temp-file issues on all platforms
         root = ET.fromstring(tsl_bytes.decode("utf-8"))
         store = cls()
