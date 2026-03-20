@@ -40,6 +40,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set version from tag
+        run: |
+          VERSION="${{ github.ref_name }}"
+          sed -i "s/^version = \".*\"/version = \"$VERSION\"/" pyproject.toml
+          echo "Building py2ddoc $VERSION"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -66,6 +72,13 @@ jobs:
         stub: ["twoddoc", "2ddoc"]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set version from tag
+        run: |
+          VERSION="${{ github.ref_name }}"
+          sed -i "s/^version = \".*\"/version = \"$VERSION\"/" stubs/${{ matrix.stub }}/pyproject.toml
+          sed -i "s/\"py2ddoc>=[^\"]*\"/\"py2ddoc>=$VERSION\"/" stubs/${{ matrix.stub }}/pyproject.toml
+          echo "Building ${{ matrix.stub }} $VERSION (requires py2ddoc>=$VERSION)"
 
       - name: Set up Python
         uses: actions/setup-python@v5
