@@ -1,6 +1,9 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = []
 
 [project]
 name = "2ddoc"
@@ -20,5 +23,3 @@ dependencies = ["py2ddoc>=0.1.0"]
 [project.urls]
 Homepage = "https://github.com/Game-K-Hack/py2ddoc"
 
-[tool.hatch.build.targets.wheel]
-packages = []
