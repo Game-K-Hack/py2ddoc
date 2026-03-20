@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "twoddoc"
+version = "0.1.0"
+description = "Alias for py2ddoc — decode and verify French ANTS 2D-Doc barcodes"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+authors = [{ name = "py2ddoc contributors" }]
+keywords = ["2ddoc", "ants", "france", "barcode", "signature"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+dependencies = ["py2ddoc>=0.1.0"]
+
+[project.urls]
+Homepage = "https://github.com/Game-K-Hack/py2ddoc"
+
+[tool.hatch.build.targets.wheel]
+packages = ["twoddoc"]

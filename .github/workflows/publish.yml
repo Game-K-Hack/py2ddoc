@@ -57,15 +57,42 @@ jobs:
           name: dist
           path: dist/
 
+  build-stubs:
+    name: Build stub packages
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        stub: ["twoddoc", "2ddoc", "2d-doc"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
+        run: pip install build
+
+      - name: Build ${{ matrix.stub }}
+        run: python -m build stubs/${{ matrix.stub }}
+
+      - name: Upload ${{ matrix.stub }} artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-stub-${{ matrix.stub }}
+          path: stubs/${{ matrix.stub }}/dist/
+
   publish:
-    name: Publish to PyPI
+    name: Publish py2ddoc to PyPI
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/p/py2ddoc
     permissions:
-      id-token: write  # required for Trusted Publishing (OIDC)
+      id-token: write
     steps:
       - name: Download distribution artifacts
         uses: actions/download-artifact@v4
@@ -74,4 +101,26 @@ jobs:
           path: dist/
 
       - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  publish-stubs:
+    name: Publish ${{ matrix.stub }} to PyPI
+    needs: [publish, build-stubs]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        stub: ["twoddoc", "2ddoc", "2d-doc"]
+    environment:
+      name: pypi-${{ matrix.stub }}
+      url: https://pypi.org/p/${{ matrix.stub }}
+    permissions:
+      id-token: write
+    steps:
+      - name: Download ${{ matrix.stub }} artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-stub-${{ matrix.stub }}
+          path: dist/
+
+      - name: Publish ${{ matrix.stub }} to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
